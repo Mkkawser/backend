@@ -1,10 +1,25 @@
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv").config();
+const profileRouter = require("./routers/profile");
+const mongoose = require("mongoose");
+const login = require("./routers/login");
+const jwtToken = require("./helper/jwt");
 const app = express();
+require("dotenv").config();
 
 app.use(cors());
-console.log(process.env.DATABASE);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+mongoose
+  .connect(
+    `mongodb+srv://Mkkawser:${process.env.password}@cluster0.ed1v50g.mongodb.net/myapp`
+  )
+  .then(console.log("connect"))
+  .catch(() => console.log("Server Error"));
+
+app.use(profileRouter);
+app.use(login);
 
 app.get("/", (req, res) => {
   res.json({ message: "Homepage" });
